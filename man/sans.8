@@ -1,0 +1,80 @@
+.TH SANS 8 "Mar 23, 2015"
+.SH NAME
+sans \- Simple anti-spoofing name server
+
+.SH SYNOPSIS
+\fBsans\fR [options...]
+
+.SH DESCRIPTION
+\fBsans\fR is a simple DNS server designed to defend against DNS spoofing. It is quiet lightweight, suitable for embedded devices and low end boxes.
+.PP
+
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+print a help message and exit
+.TP
+.B \-c, \-\-config \fI<file>\fR
+config file
+.TP
+.B \-d, \-\-daemon
+daemonize after startup
+.TP
+.B \-\-pidfile \fI<file>\fR
+PID file, default: /run/sans.pid
+.TP
+.B \-\-logfile \fI<file>\fR
+log file, default: /var/log/sans.log
+.TP
+.B \-v, \-\-verbose
+verbose logging
+.TP
+.B \-V, \-\-version
+print version and exit
+
+.SH CONFIG FILE
+
+.TP
+\fIuser=\fR
+.br
+user to set privilege to
+
+.TP
+\fIlisten=\fR address:port
+.br
+listern address and port, default: 127.0.0.1:53
+
+.TP
+\fIsocks5=\fR address:port
+.br
+SOCKS5 server
+
+.TP
+\fItest_server=\fR address:port
+.br
+DNS server for testing if a domain is polluted, default: 8.8.8.8:53
+
+.TP
+\fIcn_server=\fR address:port
+.br
+DNS server for unpolluted domains, default: 114.114.114.114:53
+
+.TP
+\fIserver=\fR address:port
+.br
+DNS server for polluted domains, default: 8.8.4.4:53
+
+.SH EXAMPLE
+
+Here is a sample config file:
+
+    user=nobody
+    listen=127.0.0.1:53
+    socks5=127.0.0.1:1080
+    test_server=8.8.8.8:53
+    cn_server=114.114.114.114:53
+    server=8.8.4.4:53
+
+.SH AUTHOR
+.PP
+This manual page was written by Xiaoxiao Pu <i@xiaoxiao.im>.

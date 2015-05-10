@@ -1,0 +1,13 @@
+[Unit]
+Description=Simple anti-spoofing name server
+After=network.target
+Documentation=man:sans(8)
+
+[Service]
+Type=forking
+KillSignal=SIGINT
+ExecStart=/usr/bin/sans -c /etc/sans.conf -d --pidfile /run/sans.pid --logfile /var/log/sans.log
+PIDFile=/run/sans.pid
+
+[Install]
+WantedBy=multi-user.target
