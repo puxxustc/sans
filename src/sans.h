@@ -1,5 +1,5 @@
 /*
- * sans.h - Simple anti-poultion name server
+ * sans.h - simple anti-poultion name server
  *
  * Copyright (C) 2014 - 2015, Xiaoxiao <i@xiaoxiao.im>
  *
@@ -22,8 +22,24 @@
 
 #include "conf.h"
 
+
+/*
+ * @func sans_init()
+ * @desc initialize
+ */
 extern int sans_init(const conf_t *conf);
+
+
+/*
+ * @func sans_run()
+ */
 extern int sans_run(void);
+
+
+/*
+ * @func sans_stop()
+ */
 extern void sans_stop(void);
+
 
 #endif // SANS_H

@@ -23,11 +23,41 @@
 #include <stdint.h>
 #include "query.h"
 
-extern void query_recv(int sock, proto_t proto, void (*cb)(uint16_t id));
-extern void reply_recv(int sock, proto_t proto, void (*cb)(void *msg, int msglen));
-extern void query_send(int sock, proto_t proto, void *msg, int msglen,
+
+/*
+ * @func query_recv()
+ * @desc receive DNS query asynchronously
+ * @memo @memo the query received will be inserted into query list
+ */
+extern void query_recv(int sock, int protocol, void (*cb)(uint16_t id));
+
+
+/*
+ * @func reply_recv()
+ * @desc receive DNS reply asynchronously
+ * @memo msg will be freed after callback
+ *       if protocol is ns_tcp, sock will be closed after receive 
+ */
+extern void reply_recv(int sock, int protocol, void (*cb)(void *msg, int msglen));
+
+
+/*
+ * @func query_send()
+ * @desc send DNS query
+ * @memo synchronously for UDP, asynchronously for TCP
+ */
+extern void query_send(int sock, int protocol, void *msg, int msglen,
                        const struct sockaddr *addr, socklen_t addrlen);
-extern void reply_send(int sock, proto_t proto, void *msg, int msglen,
+
+
+/*
+ * @func reply_send()
+ * @desc send DNS reply
+ * @memo synchronously for UDP, asynchronously for TCP
+ *       if prot is TCP, sock will be closed after reply sent
+ */
+extern void reply_send(int sock, int protocol, void *msg, int msglen,
                        const struct sockaddr *addr, socklen_t addrlen);
+
 
 #endif // DNSMSG_H

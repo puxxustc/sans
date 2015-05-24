@@ -30,48 +30,59 @@
 #  include "config.h"
 #endif
 
+
+/*
+ * @func signal_cb()
+ * @desc signal callback
+ */
 static void signal_cb(int signo)
 {
-	assert((signo == SIGINT) || (signo == SIGTERM));
-	sans_stop();
+    assert((signo == SIGINT) || (signo == SIGTERM));
+    sans_stop();
 }
 
+
+/*
+ * @func main()
+ */
 int main(int argc, char **argv)
 {
-	conf_t conf;
+    conf_t conf;
 
-	if (parse_args(argc, argv, &conf) != 0)
-	{
-		return EXIT_FAILURE;
-	}
+    // parse command line parameters and config file
+    if (parse_args(argc, argv, &conf) != 0)
+    {
+        return EXIT_FAILURE;
+    }
 
-	// daemonize
-	if (conf.daemon)
-	{
-		if (daemonize(conf.pidfile, conf.logfile) != 0)
-		{
-			return EXIT_FAILURE;
-		}
-	}
+    // daemonize
+    if (conf.daemon)
+    {
+        if (daemonize(conf.pidfile, conf.logfile) != 0)
+        {
+            return EXIT_FAILURE;
+        }
+    }
 
-	// 注册 signal handle
+    // 注册 signal handle
 #ifdef HAVE_SIGACTION
-	struct sigaction sa;
-	sa.sa_handler = signal_cb;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGINT, &sa, NULL);
-	sigaction(SIGTERM, &sa, NULL);
+    struct sigaction sa;
+    sa.sa_handler = signal_cb;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
 #else
-	signal(SIGINT, signal_cb);
-	signal(SIGTERM, signal_cb);
+    signal(SIGINT, signal_cb);
+    signal(SIGTERM, signal_cb);
 #endif
 
-	if (sans_init(&conf) != 0)
-	{
-		return EXIT_FAILURE;
-	}
+    // initialize
+    if (sans_init(&conf) != 0)
+    {
+        return EXIT_FAILURE;
+    }
 
-	return sans_run();
+    // run
+    return sans_run();
 }
-

@@ -26,7 +26,27 @@
 #  include <sys/socket.h>
 #endif
 
+
+/*
+ * @func  socks5_init()
+ * @desc  initialize SOCKS5 server address
+ * @param host - host of IP address of SOCKS5 server
+ *        port - port of SOCKS5 server
+ */
+extern int socks5_init(const char *host, const char *port);
+
+
+/*
+ * @func  async_connect()
+ * @desc  async connect (support SOCKS5)
+ * @param addr    - peer address
+ *        addrlen - length of addr
+ *        cb      - callback
+ *        socks5  - connect via SOCK5 or not
+ *        data    - additional data
+ */
 extern void async_connect(const struct sockaddr *addr, socklen_t addrlen,
-                          void (*cb)(int, void *), void *data);
+                          void (*cb)(int, void *), int socks5, void *data);
+
 
 #endif // ASYNC_CONNECT_H

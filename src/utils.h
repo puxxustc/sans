@@ -1,5 +1,5 @@
 /*
- * utils.h - Some util functions
+ * utils.h - some util functions
  *
  * Copyright (C) 2014 - 2015, Xiaoxiao <i@xiaoxiao.im>
  *
@@ -22,16 +22,70 @@
 
 #include <stdint.h>
 
+
+/*
+ * @func rand_uint16()
+ * @desc computes a pseudo-random uint16
+ */
 extern uint16_t rand_uint16(void);
+
+
+/*
+ * @func setnonblock()
+ * @desc set fd in nonblock mode
+ */
 extern int setnonblock(int fd);
+
+
+/*
+ * @func settimeout()
+ * @desc set timeout of socket
+ */
 extern int settimeout(int fd);
+
+
+/*
+ * @func setreuseaddr()
+ * @desc set SO_REUSEADDR of socket
+ */
 extern int setreuseaddr(int fd);
+
+
+/*
+ * @func setkeepalive()
+ * @desc set SO_KEEPALIVE of socket
+ */
 extern int setkeepalive(int fd);
+
+
+/*
+ * @func setnosigpipe()
+ * @desc set SO_NOSIGPIPE of socket
+ */
 #ifdef SO_NOSIGPIPE
 extern int setnosigpipe(int fd);
 #endif
+
+
+/*
+ * @func getsockerror()
+ * @desc get socket error
+ */
 extern int getsockerror(int fd);
+
+
+/*
+ * @func runas()
+ * @desc run as user
+ */
 extern int runas(const char *user);
+
+
+/*
+ * @func daemonize()
+ * @desc daemonize to background
+ */
 extern int daemonize(const char *pidfile, const char *logfile);
+
 
 #endif // UTILS_H

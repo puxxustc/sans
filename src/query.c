@@ -1,5 +1,5 @@
 /*
- * query.c - Manage DNS queries
+ * query.c - manage DNS queries
  *
  * Copyright (C) 2014 - 2015, Xiaoxiao <i@xiaoxiao.im>
  *
@@ -22,57 +22,89 @@
 #include "query.h"
 #include "utils.h"
 
-#define QUERY_MAX 128
 
-static query_t *(querys[QUERY_MAX]);
+/*
+ * @var  qlist
+ * @desc query list
+ */
+#define QLIST_SIZE 128
+static query_t * qlist[QLIST_SIZE];
 
-uint16_t query_newid(query_t *query)
-{
-	uint16_t id;
-	do
-	{
-		id = rand_uint16();
-	} while ((id == 0) || (query_search(id) != NULL));
-	query->id = id;
-	ns_setid(query->msg, id);
-	return id;
-}
 
+/*
+ * @func query_add()
+ * @desc add new DNS query
+ */
 int query_add(query_t *query)
 {
-	for (int i = 0; i < QUERY_MAX; i++)
-	{
-		if (querys[i] == NULL)
-		{
-			query->ori_id = ns_getid(query->msg);
-			query->id = query->ori_id;
-			querys[i] = query;
-			return 0;
-		}
-	}
-	return -1;
+    query->ttl = 6;
+    query->qid = query->id;
+    for (int i = 0; i < QLIST_SIZE; i++)
+    {
+        if (qlist[i] == NULL)
+        {
+            qlist[i] = query;
+            return 0;
+        }
+    }
+    return -1;
 }
 
+
+/*
+ * @func  query_search()
+ * @desc  search DNS query from query list
+ * @param id - query id
+ */
 query_t *query_search(uint16_t id)
 {
-	for (int i = 0; i < QUERY_MAX; i++)
-	{
-		if ((querys[i] != NULL) && (querys[i]->id == id))
-		{
-			return querys[i];
-		}
-	}
-	return NULL;
+    for (int i = 0; i < QLIST_SIZE; i++)
+    {
+        if ((qlist[i] != NULL) && (qlist[i]->id == id))
+        {
+            return qlist[i];
+        }
+    }
+    return NULL;
 }
 
-void query_del(uint16_t id)
+
+/*
+ * @func  query_delete()
+ * @desc  delete DNS query from query list
+ * @param id - query id
+ */
+int query_delete(uint16_t id)
 {
-	for (int i = 0; i < QUERY_MAX; i++)
-	{
-		if ((querys[i] != NULL) && (querys[i]->id == id))
-		{
-			free(querys[i]);
-			querys[i] = NULL;
-		}
-	}
+    for (int i = 0; i < QLIST_SIZE; i++)
+    {
+        if ((qlist[i] != NULL) && (qlist[i]->id == id))
+        {
+            free(qlist[i]);
+            qlist[i] = NULL;
+            return 0;
+        }
+    }
+    return -1;
+}
+
+
+/*
+ * @func query_tick()
+ * @desc delete old queries periodically
+ */
+void query_tick(void)
+{
+    for (int i = 0; i < QLIST_SIZE; i++)
+    {
+        if (qlist[i] != NULL)
+        {
+            qlist[i]->ttl--;
+            if (qlist[i]->ttl == 0)
+            {
+                free(qlist[i]);
+                qlist[i] = NULL;
+            }
+        }
+    }
 }

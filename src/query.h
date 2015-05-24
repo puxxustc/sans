@@ -1,5 +1,5 @@
 /*
- * query.h - Manage DNS queries
+ * query.h - manage DNS queries
  *
  * Copyright (C) 2014 - 2015, Xiaoxiao <i@xiaoxiao.im>
  *
@@ -28,30 +28,56 @@
 #  include <sys/socket.h>
 #endif
 
-#define BUF_SIZE 2048
 
-typedef enum
-{
-	udp = 1,
-	tcp = 2
-} proto_t;
+#include "dns.h"
 
+
+/*
+ * @type query_t
+ * @desc DNS query
+ */
 typedef struct
 {
-	uint16_t id;
-	uint16_t ori_id;
-	int sock;
-	proto_t proto;
-	int msglen;
-	int state;
-	socklen_t addrlen;
-	struct sockaddr_storage addr;
-	char msg[BUF_SIZE];
+    uint16_t id;
+    uint16_t qid;
+    int ttl;
+    int sock;
+    int protocol;
+    struct sockaddr_storage addr;
+    socklen_t addrlen;
+    int type;
+    char name[NS_NAMESZ];
 } query_t;
 
-extern uint16_t query_newid(query_t *query);
+
+/*
+ * @func query_add()
+ * @desc add new DNS query
+ */
 extern int query_add(query_t *query);
+
+
+/*
+ * @func  query_search()
+ * @desc  search DNS query from query list
+ * @param id - query id
+ */
 extern query_t *query_search(uint16_t id);
-extern void query_del(uint16_t id);
+
+
+/*
+ * @func  query_delete()
+ * @desc  delete DNS query from query list
+ * @param id - query id
+ */
+extern int query_delete(uint16_t id);
+
+
+/*
+ * @func query_tick()
+ * @desc delete old queries periodically
+ */
+extern void query_tick(void);
+
 
 #endif // QUERY_H

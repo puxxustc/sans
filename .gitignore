@@ -29,5 +29,8 @@ missing
 src/Makefile
 src/Makefile.in
 src/sans
+src/sans.qbs
+src/sans.qbs.user
 stamp-h1
+test/dev.conf
 

@@ -1,5 +1,5 @@
 /*
- * log.h
+ * log.h - print log message
  *
  * Copyright (C) 2014 - 2015, Xiaoxiao <i@xiaoxiao.im>
  *
@@ -22,12 +22,42 @@
 
 #include <stdio.h>
 
-extern void __log(FILE *stream, const char *format, ...);
-extern void __err(const char *msg);
-#define LOG(format, ...)  do{__log(stdout, format, ##__VA_ARGS__);}while(0)
+
+/*
+ * @func sans_log()
+ * @desc pring log info with timestamp
+ */
+extern void sans_log(FILE *stream, const char *format, ...);
+
+
+/*
+ * @func sans_err()
+ * @desc pring error message with timestamp
+ */
+extern void sans_err(const char *msg);
+
+
+/*
+ * @func sans_dump()
+ * @desc dump binary data
+ */
+#ifndef DEBUG
+extern void sans_dump(void *buf, size_t len);
+#endif
+
+#define LOG(format, ...)  do{sans_log(stdout, format, ##__VA_ARGS__);}while(0)
+
+
 #ifdef ERROR
 #  undef ERROR
 #endif
-#define ERROR(msg)  do{__err(msg);}while(0)
+#define ERROR(msg)  do{sans_err(msg);}while(0)
+
+#ifndef DEBUG
+#  define DUMP sans_dump
+#else
+#  define DUMP do{}while(0)
+#endif
+
 
 #endif // LOG_H

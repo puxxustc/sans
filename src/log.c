@@ -1,5 +1,5 @@
 /*
- * log.c - Log
+ * log.c - print log message
  *
  * Copyright (C) 2014 - 2015, Xiaoxiao <i@xiaoxiao.im>
  *
@@ -19,6 +19,7 @@
 
 #include <errno.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -29,36 +30,70 @@
 
 #include "log.h"
 
-void __log(FILE *stream, const char *format, ...)
-{
-	time_t now = time(NULL);
-	char timestr[20];
-	strftime(timestr, 20, "%y-%m-%d %H:%M:%S", localtime(&now));
-	fprintf(stream, "[%s] ", timestr);
 
-	va_list args;
-	va_start(args, format);
-	vfprintf(stream, format, args);
-	va_end(args);
-	putchar('\n');
-	fflush(stream);
+/*
+ * @func __log()
+ * @desc pring log info with timestamp
+ */
+void sans_log(FILE *stream, const char *format, ...)
+{
+    time_t now = time(NULL);
+    char timestr[20];
+    strftime(timestr, 20, "%y-%m-%d %H:%M:%S", localtime(&now));
+    fprintf(stream, "[%s] ", timestr);
+
+    va_list args;
+    va_start(args, format);
+    vfprintf(stream, format, args);
+    va_end(args);
+    putchar('\n');
+    fflush(stream);
 }
 
-void __err(const char *msg)
+
+/*
+ * @func sans_err()
+ * @desc pring error message with timestamp
+ */
+void sans_err(const char *msg)
 {
 #ifdef __MINGW32__
-	LPVOID *s = NULL;
-	FormatMessage(
-	            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-	            NULL, WSAGetLastError(),
-	            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-	            (LPTSTR)&s, 0, NULL);
-	if (s != NULL)
-	{
-		__log(stderr, "%s: %s", msg, s);
-		LocalFree(s);
-	}
+    LPVOID *s = NULL;
+    FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL, WSAGetLastError(),
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                (LPTSTR)&s, 0, NULL);
+    if (s != NULL)
+    {
+        __log(stderr, "%s: %s", msg, s);
+        LocalFree(s);
+    }
 #else
-	__log(stderr, "%s: %s", msg, strerror(errno));
+    sans_log(stderr, "%s: %s", msg, strerror(errno));
 #endif
 }
+
+
+/*
+ * @func sans_dump()
+ * @desc dump binary data
+ */
+#ifndef DEBUG
+void sans_dump(void *buf, size_t len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        printf("%02x ", *(uint8_t *)(buf + i));
+        if (i % 16 == 15)
+        {
+            putchar('\n');
+        }
+    }
+    if (len % 16 != 0)
+    {
+        putchar('\n');
+    }
+    fflush(stdout);
+}
+#endif

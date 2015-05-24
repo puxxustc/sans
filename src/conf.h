@@ -1,5 +1,5 @@
 /*
- * conf.h - parse config file
+ * conf.h - parse config
  *
  * Copyright (C) 2014 - 2015, Xiaoxiao <i@xiaoxiao.im>
  *
@@ -20,20 +20,31 @@
 #ifndef CONF_H
 #define CONF_H
 
+
+/*
+* @type conf_t
+* @desc configuration
+*/
 typedef struct
 {
-	int verbose;
-	int daemon;
-	char user[16];
-	char pidfile[64];
-	char logfile[64];
-	struct
-	{
-		char addr[64];
-		char port[16];
-	} listen, socks5, test_server, cn_server, server;
+    int verbose;
+    int daemon;
+    char user[16];
+    char pidfile[64];
+    char logfile[64];
+    struct
+    {
+        char addr[64];
+        char port[16];
+    } listen, socks5, test_server, cn_server, server;
 } conf_t;
 
+
+/*
+* @func parse_args()
+* @desc parse command line parameters
+*/
 extern int parse_args(int argc, char **argv, conf_t *conf);
+
 
 #endif // CONF_H

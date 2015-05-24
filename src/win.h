@@ -20,6 +20,7 @@
 #ifndef WIN_H
 #define WIN_H
 
+
 #ifdef _WIN32_WINNT
 #  undef _WIN32_WINNT
 #endif
@@ -49,5 +50,6 @@
 #define getsockopt(a, b, c, d, e) getsockopt(a, b, c, (char *)(d), e)
 #define setsockopt(a, b, c, d, e) setsockopt(a, b, c, (char *)(d), e)
 #define bzero(a, b) memset(a, 0, b)
+
 
 #endif
