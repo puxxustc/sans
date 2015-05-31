@@ -37,7 +37,7 @@ static query_t * qlist[QLIST_SIZE];
  */
 int query_add(query_t *query)
 {
-    query->ttl = 6;
+    query->ttl = 10;
     query->qid = query->id;
     for (int i = 0; i < QLIST_SIZE; i++)
     {

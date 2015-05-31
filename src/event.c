@@ -18,10 +18,12 @@
  */
 
 #include <assert.h>
+#include <errno.h>
 #include <stddef.h>
 #include <sys/select.h>
 #include <sys/time.h>
 #include "event.h"
+#include "log.h"
 
 
 /*
@@ -29,6 +31,13 @@
  * @desc should run
  */
 static volatile int run;
+
+
+/*
+ * @var  changed
+ * @desc is event listener changed since last select()
+ */
+static volatile int changed;
 
 
 /*
@@ -99,6 +108,7 @@ void ev_io_start(ev_io *w)
         if (wlist[i] == NULL)
         {
             wlist[i] = w;
+            changed = 1;
             return;
         }
     }
@@ -118,6 +128,7 @@ void ev_io_stop(ev_io *w)
         if (wlist[i] == w)
         {
             wlist[i] = NULL;
+            changed = 1;
             return;
         }
     }
@@ -128,11 +139,12 @@ void ev_io_stop(ev_io *w)
 /*
  * @func ev_poll()
  * @desc wait for events
- * @ret  event count
+ * @ret  count of triggered events
  */
 static int ev_poll(void)
 {
     fd_set rfds, wfds;
+    int ev_cnt = 0;
     int max_fd = -1;
 
     FD_ZERO(&rfds);
@@ -160,21 +172,39 @@ static int ev_poll(void)
     timeout.tv_sec = 0;
     timeout.tv_usec = 100000;
     int r = select(max_fd + 1, &rfds, &wfds, NULL, &timeout);
-    if (r > 0)
+    if (r < 0)
     {
+        if (errno != EINTR)
+        {
+            ERROR("select");
+        }
+    }
+    else if (r > 0)
+    {
+        changed = 0;
         for (int i = 0; i < WLIST_SIZE; i++)
         {
             if ((wlist[i] != NULL) && (wlist[i]->event == EV_READ) && FD_ISSET(wlist[i]->fd, &rfds))
             {
                 (wlist[i]->cb)(wlist[i]);
+                ev_cnt++;
+                if (changed)
+                {
+                    return ev_cnt;
+                }
             }
             if ((wlist[i] != NULL) && (wlist[i]->event == EV_WRITE) && FD_ISSET(wlist[i]->fd, &wfds))
             {
                 (wlist[i]->cb)(wlist[i]);
+                ev_cnt++;
+                if (changed)
+                {
+                    return ev_cnt;
+                }
             }
         }
     }
-    return r;
+    return ev_cnt;
 }
 
 

@@ -51,11 +51,13 @@
  */
 static int verbose;
 
+
 /*
  * @var  socks5
  * @desc connect via SOCKS5 or not
  */
 static int socks5;
+
 
 /*
  * @desc socket file descriptor
