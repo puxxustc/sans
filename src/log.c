@@ -32,7 +32,7 @@
 
 
 /*
- * @func __log()
+ * @func sans_log()
  * @desc pring log info with timestamp
  */
 void sans_log(FILE *stream, const char *format, ...)
@@ -66,7 +66,7 @@ void sans_err(const char *msg)
                 (LPTSTR)&s, 0, NULL);
     if (s != NULL)
     {
-        __log(stderr, "%s: %s", msg, s);
+        sans_log(stderr, "%s: %s", msg, s);
         LocalFree(s);
     }
 #else

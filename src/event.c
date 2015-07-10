@@ -20,8 +20,15 @@
 #include <assert.h>
 #include <errno.h>
 #include <stddef.h>
-#include <sys/select.h>
+
 #include <sys/time.h>
+
+#ifdef __MINGW32__
+#  include "win.h"
+#else
+#  include <sys/select.h>
+#endif
+
 #include "event.h"
 #include "log.h"
 
