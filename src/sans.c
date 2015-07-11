@@ -243,6 +243,23 @@ int sans_init(const conf_t *conf)
     }
     setnonblock(sock_server);
 
+#ifdef __MINGW32__
+    // fix weird bug with winsock
+    const unsigned int SIO_UDP_CONNRESET = 0x9800000cU;
+    int no_connset = 0;
+    int wsa_ret;
+    WSAIoctl(sock_udp, SIO_UDP_CONNRESET, &no_connset, sizeof(no_connset),
+             NULL, 0, &wsa_ret, NULL, NULL);
+    WSAIoctl(sock_tcp, SIO_UDP_CONNRESET, &no_connset, sizeof(no_connset),
+             NULL, 0, &wsa_ret, NULL, NULL);
+    WSAIoctl(sock_server, SIO_UDP_CONNRESET, &no_connset, sizeof(no_connset),
+             NULL, 0, &wsa_ret, NULL, NULL);
+    WSAIoctl(sock_cn, SIO_UDP_CONNRESET, &no_connset, sizeof(no_connset),
+             NULL, 0, &wsa_ret, NULL, NULL);
+    WSAIoctl(sock_test, SIO_UDP_CONNRESET, &no_connset, sizeof(no_connset),
+             NULL, 0, &wsa_ret, NULL, NULL);
+#endif
+
     // 初始化 SOCKS5
     if (conf->socks5.addr[0] == '\0')
     {
