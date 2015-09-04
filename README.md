@@ -1,8 +1,7 @@
 # sans #
 
-[![Release](https://img.shields.io/github/release/XiaoxiaoPu/sans.svg?style=flat)](https://github.com/XiaoxiaoPu/sans/releases/latest)
-[![License](https://img.shields.io/badge/license-GPL%203-blue.svg?style=flat)](http://www.gnu.org/licenses/gpl.html)
-[![Build Status](https://travis-ci.org/XiaoxiaoPu/sans.svg?branch=master)](https://travis-ci.org/XiaoxiaoPu/sans)
+[![Release](https://badge.xiaoxiao.im/github/release/XiaoxiaoPu/sans.svg)](https://github.com/XiaoxiaoPu/sans/releases/latest)
+[![License](https://badge.xiaoxiao.im/badge/license-GPL%203-blue.svg)](http://www.gnu.org/licenses/gpl.html)
 [![Build Status](https://ci.xiaoxiao.im/buildStatus/icon?job=sans)](https://ci.xiaoxiao.im/job/sans)
 
 **S**imple **A**nti-spoofing **N**ame **S**erver, designed to defend against DNS spoofing, suitable for embedded devices and low end boxes.
