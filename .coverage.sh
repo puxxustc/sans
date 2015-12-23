@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -18,11 +18,11 @@ cd ..
 
 COVERAGE=$(gcovr -e 'ev|ns_name.c|ns_netint.c|ns_parse.c|res_comp.c|res_mkquery.c' -r . | grep TOTAL | awk '{print $4}' | cut -c 1-2)
 if [ ${COVERAGE} -lt 60 ]; then
-	URL="https://img.shields.io/badge/coverage-${COVERAGE}%-red.svg?style=flat"
+    URL="https://img.shields.io/badge/coverage-${COVERAGE}%-red.svg?style=flat"
 elif [ ${COVERAGE} -lt 80 ]; then
-	URL="https://img.shields.io/badge/coverage-${COVERAGE}%-yellow.svg?style=flat"
+    URL="https://img.shields.io/badge/coverage-${COVERAGE}%-yellow.svg?style=flat"
 else
-	URL="https://img.shields.io/badge/coverage-${COVERAGE}%-green.svg?style=flat"
+    URL="https://img.shields.io/badge/coverage-${COVERAGE}%-green.svg?style=flat"
 fi
 curl -s -o .coverage.svg ${URL}
 

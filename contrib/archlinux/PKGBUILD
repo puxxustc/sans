@@ -1,9 +1,9 @@
-# Maintainer:  Xiaoxiao Pu <i@xiaoxiao.im>
+# Maintainer:  Xiaoxiao <i@xiaoxiao.im>
 
 pkgname=sans-git
-pkgver=r68.9270d6a
+pkgver=r
 pkgrel=1
-pkgdesc="Simple anti-spoofing name server"
+pkgdesc="A simple anti-spoofing DNS server"
 arch=('i686' 'x86_64')
 url="https://github.com/XiaoxiaoPu/sans"
 license=('GPL3')
@@ -14,18 +14,18 @@ source=("git+https://github.com/XiaoxiaoPu/sans.git")
 sha256sums=('SKIP')
 
 pkgver() {
-	cd "${srcdir}/sans"
-	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+    cd "${srcdir}/sans"
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 build() {
-	cd "${srcdir}/sans"
-	autoreconf -if
-	./configure --prefix=/usr --sysconfdir=/etc
-	make
+    cd "${srcdir}/sans"
+    autoreconf -if
+    ./configure --prefix=/usr --sysconfdir=/etc
+    make
 }
 
 package() {
-	cd "${srcdir}/sans"
-	make DESTDIR="${pkgdir}/" install
+    cd "${srcdir}/sans"
+    make DESTDIR="${pkgdir}/" install
 }

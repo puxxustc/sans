@@ -1,10 +1,11 @@
 # sans #
 
-[![Release](https://badge.xiaoxiao.im/github/release/XiaoxiaoPu/sans.svg)](https://github.com/XiaoxiaoPu/sans/releases/latest)
-[![License](https://badge.xiaoxiao.im/badge/license-GPL%203-blue.svg)](http://www.gnu.org/licenses/gpl.html)
+[![Release](https://img.shields.io/github/release/XiaoxiaoPu/sans.svg)](https://github.com/XiaoxiaoPu/sans/releases/latest)
+[![License](https://img.shields.io/badge/license-GPL%203-blue.svg)](http://www.gnu.org/licenses/gpl.html)
 [![Build Status](https://ci.xiaoxiao.im/buildStatus/icon?job=sans)](https://ci.xiaoxiao.im/job/sans)
 
 **S**imple **A**nti-spoofing **N**ame **S**erver, designed to defend against DNS spoofing, suitable for embedded devices and low end boxes.
+
 
 ## Features ##
 
@@ -12,25 +13,56 @@
 2. Detect if a domain is polluted
 3. Query polluted domains over TCP or SOCKS5
 
-## Defects ##
 
-1. No cache (for now)
-2. Do not retry if error occurs
+## Build ##
 
-## Usage ##
+
+### 1. Linux ###
+
+install GNU autotools according to your distribution, then:
 
 ```bash
-usage: sans
-  -h, --help           show this help
-  -c, --config <file>  config file
-  -d, --daemon         daemonize after initialization
-  --pidfile <file>     PID file, default: /run/sans.pid
-  --logfile <file>     log file, default: /var/log/sans.log
-  -v, --verbose        verbose logging
-  -V, --version        print version and exit
-
-Bug report: <https://github.com/XiaoxiaoPu/sans/issues>.
+autoreconf -if
+./configure --prefix=/usr --sysconfdir=/etc
+make
+sudo make install
 ```
+
+
+### 2. OS X ###
+
+install [homebrew](http://brew.sh) first, then:
+
+```bash
+brew install --HEAD https://github.com/XiaoxiaoPu/sans/raw/master/contrib/homebrew/sans.rb
+```
+
+### 3. Cross compile ###
+
+setup cross compile tool chain:
+
+```bash
+export PATH="$PATH:/pato/to/cross/compile/toolchain/"
+```
+
+build:
+
+```bash
+autoreconf -if
+./configure --host=arm-unknown-linux-gnueabihf \
+    --prefix=/usr --sysconfdir=/etc
+make
+```
+
+
+### 4. Build with MinGW ###
+
+```bash
+autoreconf -if
+./configure --host=i686-w64-mingw32
+make
+```
+
 
 ## Configuration ##
 
@@ -61,48 +93,14 @@ server=8.8.8.8:53
 
 2. Since there is no cache in sans, you may need to set it as an upstream DNS server for Dnsmasq instead of using it directly.
 
-## Build ##
-
-1. configure and make
-
-	```bash
-	autoreconf -if
-	./configure --prefix=/usr --sysconfdir=/etc
-	make
-	```
-
-2. install
-
-	```bash
-	sudo make install
-	```
-
-## Cross compile ##
-
-1. setup cross compile tool chain
-
-2. build
-
-	```bash
-	autoreconf -if
-	./configure --host=arm-unknown-linux-gnueabihf \
-	    --prefix=/usr --sysconfdir=/etc
-	make
-	```
-
-## Build with MinGW ##
-
-```bash
-autoreconf -if
-./configure --host=i686-w64-mingw32
-make
-```
 
 ## TODO ##
 
-*	cache
-*	auto pre-query
-*	recursive
+*   cache
+*   retry on error
+*   auto pre-query
+*   recursive
+
 
 ## License ##
 
