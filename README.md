@@ -76,6 +76,7 @@ cn_server   | DNS server for unpolluted domains, default: 114.114.114.114:53
 server      | DNS server for polluted domains, default: 8.8.8.8:53
 
 **sample config file:**
+
 1. use SOCKS5 proxy
 ```ini
 user=nobody
