@@ -51,6 +51,11 @@
  */
 static int verbose;
 
+/*
+ * @var  nspresolver
+ * @desc use NoStandardPort UDP Resolver or not
+ */
+static int nspresolver;
 
 /*
  * @var  socks5
@@ -108,6 +113,7 @@ int sans_init(const conf_t *conf)
 #endif
 
     verbose = conf->verbose;
+    nspresolver = conf->nspresolver;
 
     struct addrinfo hints;
     struct addrinfo *res;
@@ -404,8 +410,19 @@ static void query_cb(uint16_t id)
     else if (*(ns_block *)(cache->data))
     {
         // 被污染的域名
-        async_connect((struct sockaddr *)&(server.addr), server.addrlen,
-                      connect_cb, socks5, (void *)(uintptr_t)(query->id));
+        if (nspresolver)
+        {
+            uint8_t msg[NS_PACKETSZ];
+            int msglen = ns_mkquery(msg, NS_PACKETSZ, query->name, query->type);
+            ns_setid(msg, query->id);
+            query_send(sock_server, ns_udp, msg, msglen,
+                       (struct sockaddr *)&server.addr, server.addrlen);
+        }
+        else
+        {
+            async_connect((struct sockaddr *)&(server.addr), server.addrlen,
+                        connect_cb, socks5, (void *)(uintptr_t)(query->id));
+        }
     }
     else
     {
@@ -459,9 +476,22 @@ static void test_cb(void *msg, int msglen)
         {
             LOG("[%s] is blocked", name);
         }
-        *(ns_block *)(cache->data) = 1;
-        async_connect((struct sockaddr *)&(server.addr), server.addrlen,
-                      connect_cb, socks5, (void *)(uintptr_t)(query->id));
+        if (nspresolver)
+        {
+            *(ns_block *)(cache->data) = 1;
+            uint8_t msg2[NS_PACKETSZ];
+            int msglen2 = ns_mkquery(msg2, NS_PACKETSZ, query->name, query->type);
+            ns_setid(msg2, query->id);
+            query_send(sock_server, ns_udp, msg2, msglen2,
+                       (struct sockaddr *)&server.addr,
+                       server.addrlen);
+        }
+        else
+        {
+            *(ns_block *)(cache->data) = 1;
+            async_connect((struct sockaddr *)&(server.addr), server.addrlen,
+                        connect_cb, socks5, (void *)(uintptr_t)(query->id));
+        }
     }
     else
     {

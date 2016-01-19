@@ -11,7 +11,7 @@
 
 1. Support both UDP and TCP
 2. Detect if a domain is polluted
-3. Query polluted domains over TCP or SOCKS5
+3. Query polluted domains over TCP or SOCKS5 or NONSTANDARD UDP port DNS server 
 
 
 ## Build ##
@@ -76,7 +76,7 @@ cn_server   | DNS server for unpolluted domains, default: 114.114.114.114:53
 server      | DNS server for polluted domains, default: 8.8.8.8:53
 
 **sample config file:**
-
+1. use SOCKS5 proxy
 ```ini
 user=nobody
 group=nobody
@@ -86,10 +86,28 @@ test_server=8.8.8.8:53
 cn_server=114.114.114.114:53
 server=8.8.8.8:53
 ```
+2. use TCP
+```ini
+user=nobody
+group=nobody
+listen=127.0.0.1:5300
+test_server=8.8.8.8:53
+cn_server=114.114.114.114:53
+server=8.8.8.8:53
+```
+3. use UDP and a NONSTANDARD port DNS server
+```ini
+user=nobody
+group=nobody
+listen=127.0.0.1:5300
+test_server=8.8.8.8:53
+cn_server=114.114.114.114:53
+server=208.67.222.222:5353
+```
 
 ## Note ##
 
-1. If SOCKS5 server is not given, polluted domains will be queried over TCP. It's faster than querying over SOCKS5, but may not work in some networks.
+1. If SOCKS5 server is not given, polluted domains will be queried over TCP. It's faster than querying over SOCKS5, but may not work in some networks. if run sans with -u parameter, polluted domains will be queried over UDP. It's faster than TCP but your must make sure you set a NONSTANDARD port DNS server, like 5353, 1053 etc, must not be 53.
 
 2. Since there is no cache in sans, you may need to set it as an upstream DNS server for Dnsmasq instead of using it directly.
 

@@ -28,6 +28,7 @@
 typedef struct
 {
     int verbose;
+    int nspresolver;
     int daemon;
     char user[16];
     char pidfile[64];

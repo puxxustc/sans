@@ -52,6 +52,7 @@ static void help(void)
            "  --pidfile <file>     PID file, default: /run/sans.pid\n"
            "  --logfile <file>     log file, default: /var/log/sans.log\n"
            "  -v, --verbose        verbose logging\n"
+           "  -u, --nspresolver    use NoStandardPort UDP Resolver\n"
            "  -V, --version        print version and exit\n\n"
            "Bug report: <%s>.\n", PACKAGE, PACKAGE_BUGREPORT);
 }
@@ -256,6 +257,10 @@ int parse_args(int argc, char **argv, conf_t *conf)
         else if ((strcmp(argv[i], "-v") == 0) || (strcmp(argv[i], "--verbose") == 0))
         {
             conf->verbose = 1;
+        }
+        else if ((strcmp(argv[i], "-u") == 0) || (strcmp(argv[i], "--nspresolver") == 0))
+        {
+            conf->nspresolver = 1;
         }
         else if ((strcmp(argv[i], "-V") == 0) || (strcmp(argv[i], "--version") == 0))
         {
