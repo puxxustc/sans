@@ -77,7 +77,7 @@ server      | DNS server for polluted domains, default: 8.8.8.8:53
 
 **sample config file:**
 
-1. use SOCKS5 proxy
+use SOCKS5 proxy
 ```ini
 user=nobody
 group=nobody
@@ -87,7 +87,8 @@ test_server=8.8.8.8:53
 cn_server=114.114.114.114:53
 server=8.8.8.8:53
 ```
-2. use TCP
+
+use TCP
 ```ini
 user=nobody
 group=nobody
@@ -96,7 +97,8 @@ test_server=8.8.8.8:53
 cn_server=114.114.114.114:53
 server=8.8.8.8:53
 ```
-3. use UDP and a NONSTANDARD port DNS server
+
+use UDP and a NONSTANDARD port DNS server
 ```ini
 user=nobody
 group=nobody
