@@ -2,7 +2,7 @@
 
 set -e
 
-export CC=/usr/lib/clang-analyzer/scan-build/ccc-analyzer
+export CC=/usr/lib/clang/ccc-analyzer
 ./configure --enable-debug
 
 rm -rf .lint
@@ -33,6 +33,6 @@ if [ ${BUG} -lt 1 ]; then
 else
     BUG="${BUG}%20bugs"
 fi
-curl -s -o .lint.svg "https://img.shields.io/badge/lint-${BUG}-${COLOR}.svg?style=flat"
+curl -s -o .lint.svg "https://api.pxx.io/badge/badge/lint-${BUG}-${COLOR}.svg?style=flat"
 
 make distclean
